@@ -13,33 +13,33 @@ nc = adafruit_nunchuk.Nunchuk(i2c)
 buzzer = board.D10
 
 # Initialize Soft Start pins
-softStart_1 = board.D1
-softStart_2 = board.D3
+softStart_1 = board.D13
+softStart_2 = board.D14
 
 # Initialize Reverse pins
-Rev_1 = board.D18
-Rev_2 = board.D15
+Rev_1 = board.D11
+Rev_2 = board.D12
 
 # Initialize LED pins.
-ledA = board.D12
-ledB = board.D11
-ledC = board.D13
-ledD = board.A8
-ledE = board.D14
-ledF = board.A7
+ledA = board.A3
+ledB = board.A4
+ledC = board.A5
+ledD = board.A6
+ledE = board.A7
+ledF = board.A8
 ledG = board.A9
 
 # Initialize PWM pins
-forPwm_1 = board.A0
-forPwm_2 = board.A3
-brakPwm_1 = board.A1
-brakPwm_2 = board.A4
+forPwm_1 = board.D0
+forPwm_2 = board.D1
+brakPwm_1 = board.D2
+brakPwm_2 = board.D3
 
 # Initialize Gear Select pins
-gearSelect1_1 = board.D0
-gearSelect1_2 = board.D2
+gearSelect1_1 = board.D15
+gearSelect1_2 = board.D16
 gearSelect2_1 = board.D17
-gearSelect2_2 = board.D16
+gearSelect2_2 = board.D18
 
 # Set up pins for PWM
 pwm_1 = pwmio.PWMOut(forPwm_1)
@@ -186,7 +186,14 @@ def gearCheck(flagCount):
 # Main Loop
 while True:
     x, y = nc.joystick
-    print("joystick = {},{}".format(x, y))
+    # Debugging Check:
+    #print("joystick = {},{}".format(x, y))
+    #print('Current PWM of For_1 is:', pwm_1.duty_cycle)
+    #print('Current PWM of For_2 is:', pwm_2.duty_cycle)
+    #print('Current PWM of Brak_1 is:', pwm_3.duty_cycle)
+    #print('Current PWM of Brak_2 is:', pwm_4.duty_cycle)
+    #print('Status of Reverse flag:', rev1.value, rev2.value)
+    #print('Status of Gear Selection:', gear1_1.value, gear1_2.value, gear2_1.value, gear2_2.value)
 
     # When joystick is below this y-axis, Cart will slow/stop.
     # Will only be able to change gear or into reverse, when cart speed is zero.
@@ -230,15 +237,18 @@ while True:
             if nc.buttons.C or revFlag == True:
                 revFlag = True
                 reverseCheck(revFlag)
+                time.sleep(0.2)
                 if nc.buttons.C:
                     revFlag = False
                     reverseCheck(revFlag)
+                    time.sleep(0.2)
         # Press the z button to change the gear.
             if nc.buttons.Z:
                 gearFlag += 1
                 if gearFlag == 3:
                     gearFlag = 0
                 gearCheck(gearFlag)
+                time.sleep(0.1)
 
     # When joystick is above y-axis, the cart will move/steer.
     if y > 140:
@@ -255,16 +265,16 @@ while True:
                 # Slow left motor to 50%
                 targFor1PWM = 32768
                 targFor2PWM = 65535
-                leftMotorCont(targFor1PWM)
-                rightMotorCont(targFor2PWM)
+                leftMotorCont(currFor1PWM)
+                rightMotorCont(currFor2PWM)
                 currFor1PWM = speedCheck(currFor1PWM, targFor1PWM)
                 currFor2PWM = speedCheck(currFor2PWM, targFor2PWM)
             if 0 < x < 60:
                 # Slow left motor to 15%
                 targFor1PWM = 9380
                 targFor2PWM = 65535
-                leftMotorCont(targFor1PWM)
-                rightMotorCont(targFor2PWM)
+                leftMotorCont(currFor1PWM)
+                rightMotorCont(currFor2PWM)
                 currFor1PWM = speedCheck(currFor1PWM, targFor1PWM)
                 currFor2PWM = speedCheck(currFor2PWM, targFor2PWM)
         elif x > 140:
@@ -273,16 +283,16 @@ while True:
                 # Slow right motor to 50%.
                 targFor1PWM = 65535
                 targFor2PWM = 32768
-                leftMotorCont(targFor1PWM)
-                rightMotorCont(targFor2PWM)
+                leftMotorCont(currFor1PWM)
+                rightMotorCont(currFor2PWM)
                 currFor1PWM = speedCheck(currFor1PWM, targFor1PWM)
                 currFor2PWM = speedCheck(currFor2PWM, targFor2PWM)
             if 200 < x < 255:
                 # Slow right motor to 15%.
                 targFor1PWM = 65535
                 targFor2PWM = 9380
-                leftMotorCont(targFor1PWM)
-                rightMotorCont(targFor2PWM)
+                leftMotorCont(currFor1PWM)
+                rightMotorCont(currFor2PWM)
                 currFor1PWM = speedCheck(currFor1PWM, targFor1PWM)
                 currFor2PWM = speedCheck(currFor2PWM, targFor2PWM)
         else:
@@ -293,8 +303,9 @@ while True:
             rightMotorCont(currFor2PWM)
             currFor1PWM = speedCheck(currFor1PWM, targFor1PWM)
             currFor2PWM = speedCheck(currFor2PWM, targFor2PWM)
+    time.sleep(0.2)
 
-
+    ## Comment Guide (Ignored bottom section)
     ## if x and y != center and linear acceleration != 0, C button won't register and buzzer beep.
     ## if nc.buttons.C or revFlag == True:
         ## On/Off reverse switch
