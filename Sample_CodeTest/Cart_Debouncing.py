@@ -87,15 +87,19 @@ gear2_2.direction = digitalio.Direction.OUTPUT
 buzz = digitalio.DigitalInOut(buzzer)
 buzz.direction = digitalio.Direction.OUTPUT
 
+# How long we want the buzzer to stay on? Stay off? and last state change?
+buzzerInterval = 1.0
+lastBuzzerTime = time.monotonic()
+
 # Initialize all PWM Pins
-currFor1PWM = 4718
-currFor2PWM = 4718
-currBrak1PWM = 4718
-currBrak2PWM = 4718
-targFor1PWM = 4718
-targFor2PWM = 4718
-targBrak1PWM = 4718
-targBrak2PWM = 4718
+currFor1PWM = 5500
+currFor2PWM = 5500
+currBrak1PWM = 5500
+currBrak2PWM = 5500
+targFor1PWM = 5500
+targFor2PWM = 5500
+targBrak1PWM = 5500
+targBrak2PWM = 5500
 # Initialize Motor Pins
 pwm_1.duty_cycle = 5500
 pwm_2.duty_cycle = 5500
@@ -178,6 +182,16 @@ def rightBrakingCont(pwmSpeed):
     global pwm_4
     pwm_4.duty_cycle = pwmSpeed
 
+def buzzerOnOff():
+    global buzz, buzzerInterval, lastBuzzerTime
+    currentBuzzerTime = time.monotonic()
+    # Check if it's time to toggle the buzzer.
+    if currentBuzzerTime - lastBuzzerTime >= buzzerInterval:
+        # Toggle the buzzer.
+        buzz.value = not buzz.value
+        # Update the last toggle time
+        lastBuzzerTime = currentBuzzerTime
+
 def reverseCheck(flagCheck):
     ## Send signal to converter and reverse the motor 1 and 2.
     global pwm_5, pwm_6, buzz
@@ -185,12 +199,10 @@ def reverseCheck(flagCheck):
         # Cart is not in reverse. -- OFF
         pwm_5.duty_cycle = 4718
         pwm_6.duty_cycle = 4718
-        buzz.value = False
     if flagCheck:
         # Cart is in reverse. -- ON
         pwm_5.duty_cycle = 9415
         pwm_6.duty_cycle = 9415
-        buzz.value = True
 
 def gearCheck(flagCount):
     # Check the current gearFlag value to represent gears at different speed (no speed, low and high speed)
@@ -261,6 +273,12 @@ while True:
     pwm_7.duty_cycle = 9415
     pwm_8.duty_cycle = 9415
 
+    # Check if reverse is on or off. Buzzer will beep, if in reverse.
+    if revFlag == False:
+        buzz.value = False
+    else:
+        buzzerOnOff()
+
     # When joystick is below this y-axis, Cart will slow/stop.
     # Will only be able to change gear or into reverse, when cart speed is zero.
     if y < 132:
@@ -286,9 +304,8 @@ while True:
             leftBrakingCont(yAxisToPWM)
             rightBrakingCont(yAxisToPWM)
         # Ensured that user only change gear or into reverse, when speed is zero.
-        # Time delay may be needed, if button change register too fast.
         if currFor1PWM <= 5750 and currFor2PWM <= 5750:
-            # Press the C button to reverse the cart.
+            # Debouncing for Z and C buttons.
             if currentButtonState and not lastButtonState:
                 elapsed = time.monotonic() - lastTime
                 if elapsed > 0.05:
@@ -300,7 +317,7 @@ while True:
                         else:
                             revFlag = True
                             reverseCheck(revFlag)
-                    # Press the z button to change the gear.
+                    # Press the Z button to change the gear.
                     if nc.buttons.Z == True:
                         gearFlag += 1
                         if gearFlag == 3:
@@ -318,10 +335,10 @@ while True:
         currBrak1PWM = brakCheck(currBrak1PWM, targBrak1PWM)
         currBrak2PWM = brakCheck(currBrak2PWM, targBrak2PWM)
         # Speed up the throttle PWM progressively based on further the joystick is above y-axis.
-        yAxisToPWM = int(map_range(y, 135, 255, 5891, 6666))
+        yAxisToPWM = int(map_range(y, 132, 255, 5891, 6666))
         if x < 124:
             # Slow down left motor to steer left.
-            xAxisToPWM = int(map_range(x, 119, 0, 6666, 5891))
+            xAxisToPWM = int(map_range(x, 124, 0, 6666, 5891))
             if xAxisToPWM > 6666:
                 xAxisToPWM = 6666
             if xAxisToPWM < 5891:
@@ -334,7 +351,7 @@ while True:
             currFor2PWM = speedCheck(currFor2PWM, targFor2PWM)
         elif x > 132:
             # Slow down right motor to steer right.
-            xAxisToPWM = int(map_range(x, 135, 255, 6666, 5891))
+            xAxisToPWM = int(map_range(x, 132, 255, 6666, 5891))
             if xAxisToPWM > 6666:
                 xAxisToPWM = 6666
             if xAxisToPWM < 5891:
@@ -347,7 +364,7 @@ while True:
             currFor2PWM = speedCheck(currFor2PWM, targFor2PWM)
         else:
             # Go straight
-            # 8200 is limit
+            # 8200 is limit, before motors cut off.
             targFor1PWM = yAxisToPWM
             targFor2PWM = yAxisToPWM
             leftMotorCont(currFor1PWM)

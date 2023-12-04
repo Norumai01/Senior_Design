@@ -304,9 +304,8 @@ while True:
             leftBrakingCont(yAxisToPWM)
             rightBrakingCont(yAxisToPWM)
         # Ensured that user only change gear or into reverse, when speed is zero.
-        # Time delay may be needed, if button change register too fast.
         if currFor1PWM <= 5750 and currFor2PWM <= 5750:
-            # Press the C button to reverse the cart.
+            # Debouncing for Z and C buttons.
             if currentButtonState and not lastButtonState:
                 elapsed = time.monotonic() - lastTime
                 if elapsed > 0.05:
@@ -318,7 +317,7 @@ while True:
                         else:
                             revFlag = True
                             reverseCheck(revFlag)
-                    # Press the z button to change the gear.
+                    # Press the Z button to change the gear.
                     if nc.buttons.Z == True:
                         gearFlag += 1
                         if gearFlag == 3:
