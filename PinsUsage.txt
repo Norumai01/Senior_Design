@@ -1,0 +1,35 @@
+# Initialize pins such as I2C pins.
+i2c = board.I2C()  # uses board.SCL and board.SDA
+nc = adafruit_nunchuk.Nunchuk(i2c)
+
+# Initialize buzzer pin
+buzzer = board.D7
+
+# Initialize Soft Start pins
+softStart_1 = board.D30
+softStart_2 = board.D31
+
+# Initialize Reverse pins
+Rev_1 = board.D28
+Rev_2 = board.D29
+
+# Initialize LED pins.
+ledA = board.D6
+ledB = board.D5
+ledC = board.D4
+ledD = board.D3
+ledE = board.D2
+ledF = board.D1
+ledG = board.D0
+
+# Initialize PWM pins
+forPwm_1 = board.D24
+forPwm_2 = board.D25
+brakPwm_1 = board.D26
+brakPwm_2 = board.D27
+
+# Initialize Gear Select pins
+gearSelect1_1 = board.D14
+gearSelect1_2 = board.D15
+gearSelect2_1 = board.D16
+gearSelect2_2 = board.D17
