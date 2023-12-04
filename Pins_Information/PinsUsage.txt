@@ -17,10 +17,10 @@ Rev_2 = board.D29
 ledA = board.D6
 ledB = board.D5
 ledC = board.D4
-ledD = board.D3
-ledE = board.D2
-ledF = board.D1
-ledG = board.D0
+ledD = board.D13
+ledE = board.D10
+ledF = board.D9
+ledG = board.D8
 
 # Initialize PWM pins
 forPwm_1 = board.D24
