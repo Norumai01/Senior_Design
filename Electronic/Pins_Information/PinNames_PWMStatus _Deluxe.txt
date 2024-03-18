@@ -1,0 +1,81 @@
+Pin Names:
+board.A0 (PA02)
+board.A1 (PB04)
+board.A10 (PA07)
+board.A11 (PB00)
+board.A12 (PB01)
+board.A2 (PB05)
+board.A3 (PB06)
+board.A4 (PB07)
+board.A5 (PB08)
+board.A6 (PB09)
+board.A7 (PA04)
+board.A8 (PA05)
+board.A9 (PA06)
+board.D0 board.RX (PA23)
+board.D1 board.TX (PA22)
+board.D10 (PA15)
+board.D11 (PB15)
+board.D12 (PB14)
+board.D13 board.LED board.STATUS_LED (PB13)
+board.D14 (PB12)
+board.D15 (PB31)
+board.D16 (PA27)
+board.D17 (PB23)
+board.D18 (PB22)
+board.D2 (PA21)
+board.D3 (PA20)
+board.D4 (PB17)
+board.D5 (PB16)
+board.D6 (PA19)
+board.D7 (PA18)
+board.D8 (PA17)
+board.D9 (PA16)
+board.MISO (PA14)
+board.MOSI (PA12)
+board.SCK (PA13)
+board.SCL (PB03)
+board.SDA (PB02)
+
+PWM Status:
+No PWM on: A0
+No PWM on: A1
+PWM on: A10
+No PWM on: A11
+No PWM on: A12
+No PWM on: A2
+No PWM on: A3
+No PWM on: A4
+No PWM on: A5
+PWM on: A6
+No PWM on: A7
+PWM on: A8
+No PWM on: A9
+PWM on: D0
+PWM on: D1
+PWM on: D10
+PWM on: D11
+PWM on: D12
+PWM on: D13
+PWM on: D14
+PWM on: D15
+No PWM on: D16
+No PWM on: D17
+No PWM on: D18
+PWM on: D2
+PWM on: D3
+PWM on: D4
+PWM on: D5
+PWM on: D6
+PWM on: D7
+PWM on: D8
+PWM on: D9
+PWM on: LED
+PWM on: MISO
+PWM on: MOSI
+PWM on: RX
+PWM on: SCK
+No PWM on: SCL
+PWM on: SDA
+PWM on: STATUS_LED
+PWM on: TX
